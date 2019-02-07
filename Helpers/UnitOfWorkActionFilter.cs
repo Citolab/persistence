@@ -1,0 +1,24 @@
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace Citolab.Persistence.Helpers
+{
+    public class UnitOfWorkActionFilter : ActionFilterAttribute
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public UnitOfWorkActionFilter(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            if (context.Exception == null)
+            {
+                _unitOfWork.Commit();
+            }
+
+            base.OnActionExecuted(context);
+        }
+    }
+}
