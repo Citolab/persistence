@@ -1,4 +1,4 @@
-﻿﻿# Citolab Persistence for ASP.NET Core
+# Citolab Persistence for ASP.NET Core
  
 This library can be configured to use MongoDB or an in-memory database (using MemoryCache).
 
