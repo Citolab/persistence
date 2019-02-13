@@ -27,29 +27,28 @@ namespace Citolab.Persistence.MongoDb
             : base(memoryCache, loggerFactory, options)
         {
             if (!(options is IMongoDbDatabaseOptions mongoOptions))
-                throw new Exception("Options should be of type IMongoDatabaseOptions");
+                throw new ArgumentException("Options should be of type IMongoDatabaseOptions");
             _logger = loggerFactory.CreateLogger(GetType());
             try
             {
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if (string.IsNullOrWhiteSpace(environment))
+                {
+                    environment = "Development";
+                }
                 MongoClient client;
                 try
                 {
                     var mongoClientSettings = new MongoClientSettings
                     {
-                        Server = MongoServerAddress.Parse(mongoOptions.ConnectionString)
+                        Server = MongoServerAddress.Parse($"{mongoOptions.ConnectionString}/{mongoOptions.DatabaseName}-{environment}")                        
                     };
                     client = new MongoClient(mongoClientSettings);
                 }
                 catch
                 {
                     client = new MongoClient(mongoOptions.ConnectionString);
-                }
-
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                if (string.IsNullOrWhiteSpace(environment))
-                {
-                    environment = "Development";
-                }
+                }            
 
                 _mongoDatabase = client.GetDatabase($"{mongoOptions.DatabaseName}-{environment}");
                 _clientSession = _mongoDatabase.Client.StartSession();
