@@ -37,12 +37,10 @@ namespace Citolab.Persistence.MongoDb
                     environment = "Development";
                 }
 
-                var mongoClientSettings = new MongoClientSettings
-                {
-                    Server = MongoServerAddress.Parse(
-                        $"{mongoOptions.ConnectionString}/{mongoOptions.DatabaseName}-{environment}"),
-                    MaxConnectionIdleTime = TimeSpan.FromMinutes(1)
-                };
+                var mongoClientSettings =
+                    MongoClientSettings.FromConnectionString(
+                        $"{mongoOptions.ConnectionString}/{mongoOptions.DatabaseName}-{environment}");
+                mongoClientSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
                 var client = new MongoClient(mongoClientSettings);
 
                 _mongoDatabase = client.GetDatabase($"{mongoOptions.DatabaseName}-{environment}");
