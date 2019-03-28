@@ -58,7 +58,9 @@ namespace Citolab.Persistence.Decorators
         /// <returns></returns>
         public override IQueryable<T> AsQueryable()
         {
-            return _neverRemove ? Collection.Values.OfType<T>().Clone().AsQueryable() : base.AsQueryable();
+            return _neverRemove
+                ? Collection.Values.OfType<T>().Clone().AsQueryable().OrderBy(i => i.Created)
+                : base.AsQueryable();
         }
 
         /// <inheritdoc />
