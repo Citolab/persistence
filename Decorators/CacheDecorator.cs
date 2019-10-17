@@ -58,7 +58,9 @@ namespace Citolab.Persistence.Decorators
         /// <returns></returns>
         public override IQueryable<T> AsQueryable()
         {
-            return _neverRemove ? Collection.Values.OfType<T>().Clone().AsQueryable() : base.AsQueryable();
+            return _neverRemove
+                ? Collection.Values.OfType<T>().Clone().AsQueryable().OrderBy(i => i.Created)
+                : base.AsQueryable();
         }
 
         /// <inheritdoc />
@@ -168,7 +170,7 @@ namespace Citolab.Persistence.Decorators
         {
             if (MemoryCache == null) return await base.FirstOrDefaultAsync();
             return _neverRemove
-                ? Collection.Values.OfType<T>().AsQueryable().FirstOrDefault().Clone()
+                ? Collection.Values.OfType<T>().AsQueryable().OrderBy(i => i.Created).FirstOrDefault().Clone()
                 : await base.FirstOrDefaultAsync();
         }
 
@@ -176,7 +178,7 @@ namespace Citolab.Persistence.Decorators
         {
             if (MemoryCache == null) return await base.FirstOrDefaultAsync(filter);
             return _neverRemove
-                ? Collection.Values.OfType<T>().AsQueryable().FirstOrDefault(filter).Clone()
+                ? Collection.Values.OfType<T>().AsQueryable().OrderBy(i => i.Created).FirstOrDefault(filter).Clone()
                 : await base.FirstOrDefaultAsync(filter);
         }
 
