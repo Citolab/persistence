@@ -57,13 +57,5 @@ namespace Citolab.Persistence.NoAction
             Collections.TryAdd(typeof(T), noActionCollection);
             return noActionCollection;
         }
-
-        public override void Commit()
-        {
-        }
-
-        public override void Abort()
-        {
-        }
     }
 }

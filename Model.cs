@@ -1,6 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
-
 namespace Citolab.Persistence
 {
     /// <summary>
@@ -16,10 +14,6 @@ namespace Citolab.Persistence
             Id = Guid.NewGuid();
         }
 
-        /// <summary>
-        ///     Unique identifier.
-        /// </summary>
-        [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }
 
         /// <summary>

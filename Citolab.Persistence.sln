@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Citolab.Persistence", "Citolab.Persistence.csproj", "{87D37A1A-CFBD-49A6-93FD-F6C6D1AC1567}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{EED4D90B-BC23-4653-9CC4-5EA75E9451C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyApi", "example\MyApi\MyApi.csproj", "{C3AA030A-F3E4-4F45-AC65-F689A96128DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{87D37A1A-CFBD-49A6-93FD-F6C6D1AC1567}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87D37A1A-CFBD-49A6-93FD-F6C6D1AC1567}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87D37A1A-CFBD-49A6-93FD-F6C6D1AC1567}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3AA030A-F3E4-4F45-AC65-F689A96128DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3AA030A-F3E4-4F45-AC65-F689A96128DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3AA030A-F3E4-4F45-AC65-F689A96128DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3AA030A-F3E4-4F45-AC65-F689A96128DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3AA030A-F3E4-4F45-AC65-F689A96128DF} = {EED4D90B-BC23-4653-9CC4-5EA75E9451C8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {290EA4B9-CD8B-461F-973D-0B427A03BEF4}

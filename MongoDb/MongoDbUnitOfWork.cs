@@ -14,7 +14,6 @@ namespace Citolab.Persistence.MongoDb
     {
         private readonly ILogger _logger;
         private readonly IMongoDatabase _mongoDatabase;
-        private readonly IClientSession _clientSession;
 
         /// <summary>
         ///     Constructor
@@ -44,8 +43,6 @@ namespace Citolab.Persistence.MongoDb
                 var client = new MongoClient(mongoClientSettings);
 
                 _mongoDatabase = client.GetDatabase($"{mongoOptions.DatabaseName}-{environment}");
-                _clientSession = _mongoDatabase.Client.StartSession();
-                _clientSession.StartTransaction();
                 Collections = new ConcurrentDictionary<Type, object>();
             }
             catch (Exception exception)
@@ -68,7 +65,7 @@ namespace Citolab.Persistence.MongoDb
             {
                 return (ICollection<T>) collection;
             }
-
+           
             var mongoCollection = new FlagAsDeletedDecorator<T>(MemoryCache,
                 new FillDefaultValueDecorator<T>(MemoryCache,
                     new CacheDecorator<T>(MemoryCache, false,
@@ -84,39 +81,6 @@ namespace Citolab.Persistence.MongoDb
             }
 
             return mongoCollection;
-        }
-
-        /// <inheritdoc />
-        public override void Commit()
-        {
-            while (true)
-            {
-                try
-                {
-                    _clientSession.CommitTransaction();
-                    _logger.LogInformation("Transaction committed.");
-                    break;
-                }
-                catch (MongoException exception)
-                {
-                    // can retry commit
-                    if (exception.HasErrorLabel("UnknownTransactionCommitResult"))
-                    {
-                        _logger.LogWarning("UnknownTransactionCommitResult, retrying commit operation");
-                    }
-                    else
-                    {
-                        _logger.LogError($"Error during commit: {exception.Message}.");
-                        throw;
-                    }
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public override void Abort()
-        {
-            _clientSession.AbortTransaction();
         }
     }
 }

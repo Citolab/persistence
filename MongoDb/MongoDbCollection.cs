@@ -51,7 +51,7 @@ namespace Citolab.Persistence.MongoDb
         
         /// <inheritdoc />
         public async Task<bool> UpdateAsync(T document) =>
-            await Collection.FindOneAndReplaceAsync(i => i.Id == document.Id, document) != null;
+            await Collection.FindOneAndReplaceAsync(i => i.Id == document.Id , document) != null;
 
 
         /// <inheritdoc />

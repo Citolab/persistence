@@ -34,10 +34,5 @@ namespace Citolab.Persistence
         /// <inheritdoc />
         public abstract ICollection<T> GetCollection<T>() where T : Model, new();
 
-        /// <inheritdoc />
-        public abstract void Commit();
-
-        /// <inheritdoc />
-        public abstract void Abort();
     }
 }

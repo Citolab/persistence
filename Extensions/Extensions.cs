@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Citolab.Persistence.Helpers;
 using Citolab.Persistence.MongoDb;
 using Citolab.Persistence.NoAction;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using ObjectCloner.Extensions;
 
 namespace Citolab.Persistence.Extensions
 {
@@ -18,7 +21,7 @@ namespace Citolab.Persistence.Extensions
             return services;
         }
 
-      public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, string databaseName, string connectionString)
+        public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, string databaseName, string connectionString)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
             services.AddMemoryCache();
@@ -27,14 +30,16 @@ namespace Citolab.Persistence.Extensions
             services.AddScoped<IUnitOfWork, MongoDbUnitOfWork>();
             return services;
         }
-        
+
         /// <summary>
         ///     Deep clone using JSON serialization.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="toClone"></param>
         /// <returns></returns>
-        public static T Clone<T>(this T toClone) where T : class =>
-            JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(toClone));
+        public static T Clone<T>(this T source)
+        {
+            return source.DeepClone();
+        }
     }
 }
