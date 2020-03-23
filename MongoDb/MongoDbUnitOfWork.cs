@@ -35,14 +35,16 @@ namespace Citolab.Persistence.MongoDb
                 {
                     environment = "Development";
                 }
-
                 var mongoClientSettings =
                     MongoClientSettings.FromConnectionString(
                         $"{mongoOptions.ConnectionString}/{mongoOptions.DatabaseName}-{environment}");
                 mongoClientSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
                 var client = new MongoClient(mongoClientSettings);
 
-                _mongoDatabase = client.GetDatabase($"{mongoOptions.DatabaseName}-{environment}");
+                var fullDatabaseName = mongoOptions.EnvironmentSuffix ?
+                    $"{mongoOptions.DatabaseName}-{environment}" :
+                    mongoOptions.DatabaseName;
+                _mongoDatabase = client.GetDatabase(fullDatabaseName);
                 Collections = new ConcurrentDictionary<Type, object>();
             }
             catch (Exception exception)

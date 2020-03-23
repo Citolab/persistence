@@ -4,5 +4,6 @@
     {
         string ConnectionString { get; }
         string DatabaseName { get; }
+        bool EnvironmentSuffix { get; set; }
     }
 }

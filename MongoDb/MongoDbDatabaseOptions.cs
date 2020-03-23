@@ -12,7 +12,7 @@ namespace Citolab.Persistence.MongoDb
             DatabaseName = databaseName;
             ConnectionString = connectionString;
         }
-
+        public bool EnvironmentSuffix { get; set; } = true;
         public bool FlagDelete { get; set; }
         public bool TimeLoggingEnabled { get; set; }
     }
