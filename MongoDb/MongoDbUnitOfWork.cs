@@ -35,15 +35,16 @@ namespace Citolab.Persistence.MongoDb
                 {
                     environment = "Development";
                 }
-                var mongoClientSettings =
-                    MongoClientSettings.FromConnectionString(
-                        $"{mongoOptions.ConnectionString}/{mongoOptions.DatabaseName}-{environment}");
-                mongoClientSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
-                var client = new MongoClient(mongoClientSettings);
-
                 var fullDatabaseName = mongoOptions.EnvironmentSuffix ?
                     $"{mongoOptions.DatabaseName}-{environment}" :
                     mongoOptions.DatabaseName;
+
+                var mongoClientSettings =
+                    MongoClientSettings.FromConnectionString(
+                        $"{mongoOptions.ConnectionString}/{fullDatabaseName}");
+                mongoClientSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
+                var client = new MongoClient(mongoClientSettings);
+
                 _mongoDatabase = client.GetDatabase(fullDatabaseName);
                 Collections = new ConcurrentDictionary<Type, object>();
             }
@@ -65,9 +66,9 @@ namespace Citolab.Persistence.MongoDb
         {
             if (Collections.TryGetValue(typeof(T), out var collection))
             {
-                return (ICollection<T>) collection;
+                return (ICollection<T>)collection;
             }
-           
+
             var mongoCollection = new FlagAsDeletedDecorator<T>(MemoryCache,
                 new FillDefaultValueDecorator<T>(MemoryCache,
                     new CacheDecorator<T>(MemoryCache, false,
