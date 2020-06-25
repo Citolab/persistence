@@ -11,7 +11,16 @@
         <PackageProjectUrl>https://github.com/Citolab/persistence/</PackageProjectUrl>
         <PackageIconUrl>https://avatars1.githubusercontent.com/u/32355044?s=400&amp;u=8d300a1c77a82b06814b096d175f68a33bd6f73b&amp;v=4</PackageIconUrl>
         <RepositoryUrl>https://github.com/Citolab/persistence/</RepositoryUrl>
-    </PropertyGroup>
+    
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
     <ItemGroup>
       <Compile Remove="example\**" />
