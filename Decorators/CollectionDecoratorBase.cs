@@ -38,6 +38,9 @@ namespace Citolab.Persistence.Decorators
         public virtual IQueryable<T> AsQueryable() =>
             _decoree.AsQueryable();
 
+        public virtual IList<T> ToList(bool cache) =>
+            _decoree.ToList(cache);
+
         public virtual async Task<bool> UpdateAsync(T document) =>
             await _decoree.UpdateAsync(document);
 
@@ -46,7 +49,7 @@ namespace Citolab.Persistence.Decorators
 
         public virtual async Task<IEnumerable<T>> GetAsync(params Guid[] ids) =>
             await _decoree.GetAsync(ids);
-        
+
         public virtual async Task<long> GetCountAsync() =>
             await _decoree.GetCountAsync();
 
@@ -64,5 +67,7 @@ namespace Citolab.Persistence.Decorators
 
         public virtual async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter) =>
             await _decoree.FirstOrDefaultAsync(filter);
+
+
     }
 }

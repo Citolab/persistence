@@ -32,6 +32,12 @@ namespace MyApi.Controllers
             return Ok(_unitOfWork.GetCollection<SampleEnitity>().AsQueryable().ToList());
         }
 
+        [HttpGet]
+        public ActionResult<IEnumerable<SampleEnitity>> GetAllCached()
+        {
+            return Ok(_unitOfWork.GetCollection<SampleEnitity>().ToList(true));
+        }
+
 
         // GET api/values/5
         [HttpGet("{id}")]

@@ -19,6 +19,8 @@ namespace Citolab.Persistence.NoAction
     public class NoActionCollection<T> : ICollection<T> where T : Model, new()
     {
         public IQueryable<T> AsQueryable() => new ConcurrentBag<T>().Clone().AsQueryable();
+
+        public IList<T> ToList(bool cache = false) => new ConcurrentBag<T>().Clone().AsQueryable().ToList();
         public async Task<T> GetAsync(Guid id) => null;
         public async Task<IEnumerable<T>> GetAsync(params Guid[] ids) => new ConcurrentBag<T>().Clone().AsQueryable();
         public async Task<bool> UpdateAsync(T document) => true;
@@ -30,5 +32,6 @@ namespace Citolab.Persistence.NoAction
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> filter) => false;
         public async Task<T> FirstOrDefaultAsync() => null;
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter) => null;
+
     }
 }

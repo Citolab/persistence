@@ -19,6 +19,13 @@ namespace Citolab.Persistence
         IQueryable<T> AsQueryable();
 
         /// <summary>
+        /// ToList the collection with optional caching of the full list in memorycache
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <returns></returns>
+        IList<T> ToList(bool cache = false);
+
+        /// <summary>
         ///     Get document.
         /// </summary>
         /// <param name="id"></param>

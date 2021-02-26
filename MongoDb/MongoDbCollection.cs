@@ -42,6 +42,11 @@ namespace Citolab.Persistence.MongoDb
         /// <inheritdoc />
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();
 
+        public IList<T> ToList(bool cache = false)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc />
         public Task<T> GetAsync(Guid id) => Collection.FindAsync(o => o.Id == id).Result?.SingleOrDefaultAsync();
 
@@ -125,5 +130,7 @@ namespace Citolab.Persistence.MongoDb
             Logger.LogDebug($"Adding index on field {indexFieldName} to collection {typeof(T).Name}");
             Collection.Indexes.CreateOne(createIndexModel);
         }
+
+
     }
 }
