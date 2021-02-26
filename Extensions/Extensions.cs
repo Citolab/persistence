@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Citolab.Persistence.Helpers;
@@ -21,12 +22,12 @@ namespace Citolab.Persistence.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, string databaseName, string connectionString)
+        public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, string databaseName, string connectionString, List<Type> typesToCache = null)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
             services.AddMemoryCache();
             services.AddLogging();
-            services.AddSingleton<ICollectionOptions>(new MongoDbDatabaseOptions(databaseName, connectionString));
+            services.AddSingleton<ICollectionOptions>(new MongoDbDatabaseOptions(databaseName, connectionString, typesToCache));
             services.AddScoped<IUnitOfWork, MongoDbUnitOfWork>();
             return services;
         }

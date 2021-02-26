@@ -6,7 +6,7 @@ using Citolab.Persistence;
 
 namespace MyApi
 {
-    public class SampleEnitity: Model
+    public class SampleEntity: Model
     {
         public string Value { get; set; }
 

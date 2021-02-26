@@ -42,11 +42,6 @@ namespace Citolab.Persistence.MongoDb
         /// <inheritdoc />
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();
 
-        public List<T> ToList(bool cache = false)
-        {
-            return Collection.AsQueryable().ToList();
-        }
-
         /// <inheritdoc />
         public Task<T> GetAsync(Guid id) => Collection.FindAsync(o => o.Id == id).Result?.SingleOrDefaultAsync();
 

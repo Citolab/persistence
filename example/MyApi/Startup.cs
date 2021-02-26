@@ -29,11 +29,13 @@ namespace MyApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // adding new List<Type> { typeof(SampleEntity) } to the option will make sure the collection is cached.
+            // whats means that it keeps in cache as long as the API runs. It does get updates from CRUD function
             services.AddMongoDbPersistence("Example", Configuration.GetConnectionString("MongoDB"));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pairwise Backend", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Citolab Persistence", Version = "v1" });
             });
         }
 
@@ -52,7 +54,7 @@ namespace MyApi
             });
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Example backend V1"); });
-;
+            ;
 
         }
     }

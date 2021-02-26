@@ -63,22 +63,6 @@ namespace Citolab.Persistence.Decorators
                 : base.AsQueryable();
         }
 
-        public override List<T> ToList(bool cache)
-        {
-            var cacheKey = $"{typeof(T)}-collection";
-            var isCached = MemoryCache.TryGetValue(cacheKey, out List<T> cachedList);
-            if (isCached)
-            {
-                return cachedList;
-            }
-            var list = base.ToList(cache);
-            if (cache)
-            {
-                MemoryCache.Set(cacheKey, list, new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove));
-            }
-            return list;
-        }
-
         /// <inheritdoc />
         public override async Task<T> GetAsync(Guid id)
         {

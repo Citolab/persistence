@@ -67,3 +67,13 @@ public class User : Model
 	//properties
 }
 ```
+
+Another way of caching can be achieved by adding a list of Types that should keep in cache.
+Collections of this type will be in MemoryCache as long the application runs. 
+The collection will be in sync after CRUD operations
+
+```C#
+var services = new ServiceCollection();
+services.AddMongoDbPersistence("MyDatabase", Configuration.GetConnectionString("MongoDB"), new List<Type> { typeof(SampleEntity) });
+
+```

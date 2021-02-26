@@ -17,60 +17,53 @@ namespace MyApi.Controllers
         public ValuesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            var sampleEntity = _unitOfWork.GetCollection<SampleEnitity>();
+            var sampleEntity = _unitOfWork.GetCollection<SampleEntity>();
             if (sampleEntity.AsQueryable().Any()) return;
             for (var i = 0; i < 10; i++)
             {
-                sampleEntity.AddAsync(new SampleEnitity
+                sampleEntity.AddAsync(new SampleEntity
                     { Id = new Guid(), Value = $"Value {i}" }).Wait();
             }
         }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<SampleEnitity>> GetAll()
+        public ActionResult<IEnumerable<SampleEntity>> GetAll()
         {
-            return Ok(_unitOfWork.GetCollection<SampleEnitity>().AsQueryable().ToList());
+            return Ok(_unitOfWork.GetCollection<SampleEntity>().AsQueryable().ToList());
         }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<SampleEnitity>> GetAllCached()
-        {
-            return Ok(_unitOfWork.GetCollection<SampleEnitity>().ToList(true));
-        }
-
 
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(Guid id)
         {
-            return Ok(_unitOfWork.GetCollection<SampleEnitity>()
+            return Ok(_unitOfWork.GetCollection<SampleEntity>()
                 .FirstOrDefaultAsync(sample => sample.Id == id).Result);
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] SampleEnitity value)
+        public void Post([FromBody] SampleEntity value)
         {
-            _unitOfWork.GetCollection<SampleEnitity>().AddAsync(value);
+            _unitOfWork.GetCollection<SampleEntity>().AddAsync(value);
             
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] SampleEnitity value)
+        public void Put(Guid id, [FromBody] SampleEntity value)
         {
             if (id != value.Id)
             {
                 throw new Exception("Id should match ObjectId");
             }
-            _unitOfWork.GetCollection<SampleEnitity>().UpdateAsync(value).Wait();
+            _unitOfWork.GetCollection<SampleEntity>().UpdateAsync(value).Wait();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
-            _unitOfWork.GetCollection<SampleEnitity>().DeleteAsync(id).Wait();
+            _unitOfWork.GetCollection<SampleEntity>().DeleteAsync(id).Wait();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Citolab.Persistence.Decorators;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ namespace Citolab.Persistence.MongoDb
     {
         private readonly ILogger _logger;
         private readonly IMongoDatabase _mongoDatabase;
-
+        private readonly List<Type> _typesToCache;
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -46,6 +47,7 @@ namespace Citolab.Persistence.MongoDb
                 var client = new MongoClient(mongoClientSettings);
 
                 _mongoDatabase = client.GetDatabase(fullDatabaseName);
+                _typesToCache = mongoOptions.TypesToCache;
                 Collections = new ConcurrentDictionary<Type, object>();
             }
             catch (Exception exception)
@@ -68,10 +70,10 @@ namespace Citolab.Persistence.MongoDb
             {
                 return (ICollection<T>)collection;
             }
-
+            var neverRemove = _typesToCache.Contains(typeof(T));
             var mongoCollection = new FlagAsDeletedDecorator<T>(MemoryCache,
                 new FillDefaultValueDecorator<T>(MemoryCache,
-                    new CacheDecorator<T>(MemoryCache, false,
+                    new CacheDecorator<T>(MemoryCache, neverRemove,
                         new MongoDbCollection<T>(LoggerFactory, _mongoDatabase)), ActorId));
             if (LogTime)
             {
