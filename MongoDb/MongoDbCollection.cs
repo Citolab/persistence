@@ -42,9 +42,9 @@ namespace Citolab.Persistence.MongoDb
         /// <inheritdoc />
         public IQueryable<T> AsQueryable() => Collection.AsQueryable();
 
-        public IList<T> ToList(bool cache = false)
+        public List<T> ToList(bool cache = false)
         {
-            throw new NotImplementedException();
+            return Collection.AsQueryable().ToList();
         }
 
         /// <inheritdoc />

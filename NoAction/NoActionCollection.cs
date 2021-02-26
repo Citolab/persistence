@@ -20,7 +20,7 @@ namespace Citolab.Persistence.NoAction
     {
         public IQueryable<T> AsQueryable() => new ConcurrentBag<T>().Clone().AsQueryable();
 
-        public IList<T> ToList(bool cache = false) => new ConcurrentBag<T>().Clone().AsQueryable().ToList();
+        public List<T> ToList(bool cache = false) => new ConcurrentBag<T>().Clone().AsQueryable().ToList();
         public async Task<T> GetAsync(Guid id) => null;
         public async Task<IEnumerable<T>> GetAsync(params Guid[] ids) => new ConcurrentBag<T>().Clone().AsQueryable();
         public async Task<bool> UpdateAsync(T document) => true;

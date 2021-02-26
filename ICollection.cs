@@ -23,7 +23,7 @@ namespace Citolab.Persistence
         /// </summary>
         /// <param name="cache"></param>
         /// <returns></returns>
-        IList<T> ToList(bool cache = false);
+        List<T> ToList(bool cache = false);
 
         /// <summary>
         ///     Get document.

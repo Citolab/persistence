@@ -63,10 +63,10 @@ namespace Citolab.Persistence.Decorators
                 : base.AsQueryable();
         }
 
-        public override IList<T> ToList(bool cache)
+        public override List<T> ToList(bool cache)
         {
             var cacheKey = $"{typeof(T)}-collection";
-            var isCached = MemoryCache.TryGetValue(cacheKey, out IList<T> cachedList);
+            var isCached = MemoryCache.TryGetValue(cacheKey, out List<T> cachedList);
             if (isCached)
             {
                 return cachedList;

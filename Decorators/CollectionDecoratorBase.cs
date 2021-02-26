@@ -38,7 +38,7 @@ namespace Citolab.Persistence.Decorators
         public virtual IQueryable<T> AsQueryable() =>
             _decoree.AsQueryable();
 
-        public virtual IList<T> ToList(bool cache) =>
+        public virtual List<T> ToList(bool cache) =>
             _decoree.ToList(cache);
 
         public virtual async Task<bool> UpdateAsync(T document) =>
