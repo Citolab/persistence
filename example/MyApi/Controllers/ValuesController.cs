@@ -32,6 +32,7 @@ namespace MyApi.Controllers
             return Ok(_unitOfWork.GetCollection<SampleEntity>().AsQueryable().ToList());
         }
 
+
         // GET api/values/5
         [HttpGet("{id}")]
         public ActionResult<string> Get(Guid id)

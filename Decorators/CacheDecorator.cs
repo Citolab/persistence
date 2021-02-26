@@ -58,9 +58,26 @@ namespace Citolab.Persistence.Decorators
         /// <returns></returns>
         public override IQueryable<T> AsQueryable()
         {
-            return _neverRemove
-                ? Collection.Values.OfType<T>().Clone().AsQueryable().OrderBy(i => i.Created)
-                : base.AsQueryable();
+            if (_neverRemove)
+            {
+                var list = Collection.Values.OfType<T>().Clone()
+                        .AsQueryable()
+                        .OrderBy(i => i.Created)
+                        .ToList();
+                if (!list.Any())
+                {
+                    list = base.AsQueryable().ToList().Clone();
+                    var dict = new ConcurrentDictionary<string, Model>();
+                    list.ForEach(doc =>
+                    {
+                        var key = $"{typeof(T)}-{doc.Id}";
+                        dict.TryAdd(key, doc);
+                    });
+                    MemoryCache.Set(_collectionKey, dict, _memoryCacheOptions);
+                }
+                return list.AsQueryable();
+            }
+            return base.AsQueryable();
         }
 
         /// <inheritdoc />

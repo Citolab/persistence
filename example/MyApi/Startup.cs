@@ -30,8 +30,8 @@ namespace MyApi
         public void ConfigureServices(IServiceCollection services)
         {
             // adding new List<Type> { typeof(SampleEntity) } to the option will make sure the collection is cached.
-            // whats means that it keeps in cache as long as the API runs. It does get updates from CRUD function
-            services.AddMongoDbPersistence("Example", Configuration.GetConnectionString("MongoDB"));
+            // whats means that it keeps in cache as long as the API runs. It does get updates from 
+            services.AddMongoDbPersistence("Example", Configuration.GetConnectionString("MongoDB"), new List<Type> { typeof(SampleEntity) });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
