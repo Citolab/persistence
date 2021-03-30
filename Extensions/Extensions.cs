@@ -32,6 +32,16 @@ namespace Citolab.Persistence.Extensions
             return services;
         }
 
+        public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, MongoDbDatabaseOptions settings)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            services.AddMemoryCache();
+            services.AddLogging();
+            services.AddSingleton<ICollectionOptions>(settings);
+            services.AddScoped<IUnitOfWork, MongoDbUnitOfWork>();
+            return services;
+        }
+
         /// <summary>
         ///     Deep clone using JSON serialization.
         /// </summary>
