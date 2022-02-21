@@ -131,6 +131,15 @@ namespace Citolab.Persistence.Decorators
             return ret.Clone();
         }
 
+        public override async Task AddManyAsync(List<T> documents)
+        {
+            var addActions = documents.Select((document =>
+            {
+                return AddAsync(document);
+            })).ToArray();
+            await Task.WhenAll(addActions);
+        }
+
         /// <summary>
         ///     Update and edit cache before update in the database
         /// </summary>

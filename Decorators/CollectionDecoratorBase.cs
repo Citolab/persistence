@@ -32,6 +32,10 @@ namespace Citolab.Persistence.Decorators
         public virtual async Task<T> AddAsync(T document) =>
             await _decoree.AddAsync(document);
 
+        public virtual async Task AddManyAsync(List<T> documents)
+        {
+            await _decoree.AddManyAsync(documents);
+        }
         public virtual async Task<bool> DeleteAsync(Guid id) =>
             await _decoree.DeleteAsync(id);
 

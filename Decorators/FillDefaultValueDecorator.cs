@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Citolab.Persistence.Helpers;
 using Microsoft.Extensions.Caching.Memory;
@@ -44,6 +45,34 @@ namespace Citolab.Persistence.Decorators
             document.Created = dateNow;
             document.LastModified = dateNow;
             return await base.AddAsync(document);
+        }
+
+        public override async Task AddManyAsync(List<T> documents)
+        {
+            foreach (var document in documents)
+            {
+                var userId = document.CreatedByUserId == Guid.Empty
+                ? _actorId
+                : document.CreatedByUserId;
+                if (document.Id == default(Guid)) document.Id = Guid.NewGuid();
+                if (userId.HasValue)
+                {
+                    document.CreatedByUserId =
+                        !OverrideDefaultValues.FillDefaulValues && document.CreatedByUserId != default(Guid)
+                            ? document.CreatedByUserId
+                            : userId.Value;
+                    document.LastModifiedByUserId =
+                        !OverrideDefaultValues.FillDefaulValues && document.LastModifiedByUserId != default(Guid)
+                            ? document.LastModifiedByUserId
+                            : userId.Value;
+                }
+                var dateNow = !OverrideDefaultValues.FillDefaulValues && document.Created != default(DateTime)
+                    ? document.Created
+                    : DateTime.UtcNow;
+                document.Created = dateNow;
+                document.LastModified = dateNow;
+            }
+            await base.AddManyAsync(documents);
         }
 
 

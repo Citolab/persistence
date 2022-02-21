@@ -61,6 +61,11 @@ namespace Citolab.Persistence.MongoDb
             return document;
         }
 
+        public async Task AddManyAsync(List<T> documents)
+        {
+            await Collection.InsertManyAsync(documents);
+        }
+
         /// <inheritdoc />
         public async Task<bool> DeleteAsync(Guid id) =>
             await Collection.FindOneAndDeleteAsync(i => i.Id == id) != null;
@@ -125,7 +130,6 @@ namespace Citolab.Persistence.MongoDb
             Logger.LogDebug($"Adding index on field {indexFieldName} to collection {typeof(T).Name}");
             Collection.Indexes.CreateOne(createIndexModel);
         }
-
 
     }
 }

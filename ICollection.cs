@@ -47,6 +47,13 @@ namespace Citolab.Persistence
         Task<T> AddAsync(T document);
 
         /// <summary>
+        /// Add multiple documents
+        /// </summary>
+        /// <param name="documents"></param>
+        /// <returns></returns>
+        Task AddManyAsync(List<T> documents);
+
+        /// <summary>
         ///     Delete document.
         /// </summary>
         /// <param name="id"></param>

@@ -26,6 +26,14 @@ namespace Citolab.Persistence.Decorators
             return Task.FromResult(result);
         }
 
+        public override async Task AddManyAsync(List<T> document)
+        {
+            _stopwatch.Restart();
+            await base.AddManyAsync(document);
+            _stopwatch.Stop();
+            _logger.LogDebug($"AddManyAsync(documents)|{_stopwatch.ElapsedMilliseconds}");
+        }
+
         public override Task<T> GetAsync(Guid id)
         {
             _stopwatch.Restart();
