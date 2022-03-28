@@ -30,7 +30,7 @@ namespace Citolab.Persistence.Decorators
             if (neverRemove)
             {
                 _collectionKey = string.Concat(_collectionKey, typeof(T));
-                if (!(MemoryCache.TryGetValue(_collectionKey, out var _)) {
+                if (!(MemoryCache.TryGetValue(_collectionKey, out var _))) {
                     var list = base.AsQueryable().ToList().Clone();
                     var dict = new ConcurrentDictionary<string, Model>();
                     list.ForEach(doc =>
