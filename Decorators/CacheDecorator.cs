@@ -30,6 +30,16 @@ namespace Citolab.Persistence.Decorators
             if (neverRemove)
             {
                 _collectionKey = string.Concat(_collectionKey, typeof(T));
+                if (!(MemoryCache.TryGetValue(_collectionKey, out var _)) {
+                    var list = base.AsQueryable().ToList().Clone();
+                    var dict = new ConcurrentDictionary<string, Model>();
+                    list.ForEach(doc =>
+                    {
+                        var key = $"{typeof(T)}-{doc.Id}";
+                        dict.TryAdd(key, doc);
+                    });
+                    MemoryCache.Set(_collectionKey, dict, _memoryCacheOptions);
+                }                  
             }
             var cacheAttribute = typeof(T).GetTypeInfo().GetCustomAttribute<CacheAttribute>();
             var cacheTimeInSeconds = cacheAttribute?.SecondsToCache ?? 300;
@@ -63,17 +73,6 @@ namespace Citolab.Persistence.Decorators
                         .AsQueryable()
                         .OrderBy(i => i.Created)
                         .ToList();
-                if (!list.Any())
-                {
-                    list = base.AsQueryable().ToList().Clone();
-                    var dict = new ConcurrentDictionary<string, Model>();
-                    list.ForEach(doc =>
-                    {
-                        var key = $"{typeof(T)}-{doc.Id}";
-                        dict.TryAdd(key, doc);
-                    });
-                    MemoryCache.Set(_collectionKey, dict, _memoryCacheOptions);
-                }
                 return list.AsQueryable();
             }
             return base.AsQueryable();
