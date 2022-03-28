@@ -31,7 +31,6 @@ namespace Citolab.Persistence.Decorators
             {
                 _collectionKey = string.Concat(_collectionKey, typeof(T));
             }
-
             var cacheAttribute = typeof(T).GetTypeInfo().GetCustomAttribute<CacheAttribute>();
             var cacheTimeInSeconds = cacheAttribute?.SecondsToCache ?? 300;
             _memoryCacheOptions = neverRemove
@@ -113,19 +112,18 @@ namespace Citolab.Persistence.Decorators
         /// <returns></returns>
         public override async Task<T> AddAsync(T document)
         {
-            if (MemoryCache == null) return await base.AddAsync(document);
+            if (MemoryCache == null)
+            {
+                return await base.AddAsync(document);
+            }
             var key = $"{typeof(T)}-{document.Id}";
             var doc = document.Clone();
-            if (_neverRemove)
+            lock (_lockCollection)
             {
-                lock (_lockCollection)
-                {
-                    var coll = Collection;
-                    if (!coll.ContainsKey(key)) coll.TryAdd(key, doc);
-                    MemoryCache.Set(_collectionKey, coll, _memoryCacheOptions);
-                }
+                var coll = Collection;
+                if (!coll.ContainsKey(key)) coll.TryAdd(key, doc);
+                MemoryCache.Set(_collectionKey, coll, _memoryCacheOptions);
             }
-
             MemoryCache.Set(key, doc, _memoryCacheOptions);
             var ret = await base.AddAsync(doc);
             return ret.Clone();
@@ -133,11 +131,29 @@ namespace Citolab.Persistence.Decorators
 
         public override async Task AddManyAsync(List<T> documents)
         {
-            var addActions = documents.Select((document =>
+            if (MemoryCache == null)
             {
-                return AddAsync(document);
-            })).ToArray();
-            await Task.WhenAll(addActions);
+                await base.AddManyAsync(documents);
+            }
+            else
+            {
+                foreach (var document in documents)
+                {
+                    var key = $"{typeof(T)}-{document.Id}";
+                    var doc = document.Clone();
+                    if (_neverRemove)
+                    {
+                        lock (_lockCollection)
+                        {
+                            var coll = Collection;
+                            if (!coll.ContainsKey(key)) coll.TryAdd(key, doc);
+                            MemoryCache.Set(_collectionKey, coll, _memoryCacheOptions);
+                        }
+                    }
+                    MemoryCache.Set(key, doc, _memoryCacheOptions);
+                }
+                await base.AddManyAsync(documents);
+            }
         }
 
         /// <summary>
@@ -147,43 +163,53 @@ namespace Citolab.Persistence.Decorators
         /// <returns></returns>
         public override async Task<bool> UpdateAsync(T document)
         {
-            if (MemoryCache == null) return await base.UpdateAsync(document);
-            var key = $"{typeof(T)}-{document.Id}";
-            var doc = document.Clone();
-            if (_neverRemove)
+            if (MemoryCache == null)
             {
-                lock (_lockCollection)
+                return await base.UpdateAsync(document);
+            }
+            else
+            {
+                var key = $"{typeof(T)}-{document.Id}";
+                var doc = document.Clone();
+                if (_neverRemove)
                 {
-                    if (Collection.ContainsKey(key))
+                    lock (_lockCollection)
                     {
-                        Collection[key] = doc;
-                        MemoryCache.Set(_collectionKey, Collection, _memoryCacheOptions);
+                        if (Collection.ContainsKey(key))
+                        {
+                            Collection[key] = doc;
+                            MemoryCache.Set(_collectionKey, Collection, _memoryCacheOptions);
+                        }
                     }
                 }
+                MemoryCache.Set(key, doc, _memoryCacheOptions);
+                return await base.UpdateAsync(document);
             }
-
-            MemoryCache.Set(key, doc, _memoryCacheOptions);
-            return await base.UpdateAsync(document);
         }
 
         public override async Task<bool> DeleteAsync(Guid id)
         {
-            if (MemoryCache == null) return await base.DeleteAsync(id);
-            var key = $"{typeof(T)}-{id}";
-            if (_neverRemove)
+            if (MemoryCache == null)
             {
-                if (Collection.ContainsKey(key))
+                return await base.DeleteAsync(id);
+            }
+            else
+            {
+                var key = $"{typeof(T)}-{id}";
+                if (_neverRemove)
                 {
-                    lock (_lockCollection)
+                    if (Collection.ContainsKey(key))
                     {
-                        Collection.TryRemove(key, out _);
-                        MemoryCache.Set(_collectionKey, Collection, _memoryCacheOptions);
+                        lock (_lockCollection)
+                        {
+                            Collection.TryRemove(key, out _);
+                            MemoryCache.Set(_collectionKey, Collection, _memoryCacheOptions);
+                        }
                     }
                 }
+                MemoryCache.Remove(key);
+                return await base.DeleteAsync(id);
             }
-
-            MemoryCache.Remove(key);
-            return await base.DeleteAsync(id);
         }
 
         public override async Task<long> GetCountAsync()

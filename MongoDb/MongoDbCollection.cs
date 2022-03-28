@@ -48,10 +48,10 @@ namespace Citolab.Persistence.MongoDb
         /// <inheritdoc />
         public Task<IEnumerable<T>> GetAsync(params Guid[] ids) =>
             Task.FromResult(Collection.FindAsync(o => ids.Contains(o.Id)).Result?.ToEnumerable());
-        
+
         /// <inheritdoc />
         public async Task<bool> UpdateAsync(T document) =>
-            await Collection.FindOneAndReplaceAsync(i => i.Id == document.Id , document) != null;
+            await Collection.FindOneAndReplaceAsync(i => i.Id == document.Id, document) != null;
 
 
         /// <inheritdoc />
@@ -63,7 +63,11 @@ namespace Citolab.Persistence.MongoDb
 
         public async Task AddManyAsync(List<T> documents)
         {
-            await Collection.InsertManyAsync(documents);
+
+            await Collection.InsertManyAsync(documents, new InsertManyOptions
+            {
+                IsOrdered = false
+            });
         }
 
         /// <inheritdoc />
@@ -111,7 +115,7 @@ namespace Citolab.Persistence.MongoDb
                 var attribute = m.GetCustomAttributes()
                     .FirstOrDefault(a => a.GetType() == typeof(EnsureIndexAttribute));
                 if (attribute != null)
-                    EnsureIndexesAsDeclared((EnsureIndexAttribute) attribute, m.Name);
+                    EnsureIndexesAsDeclared((EnsureIndexAttribute)attribute, m.Name);
             }
         }
 
