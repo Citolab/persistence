@@ -100,12 +100,24 @@ namespace Citolab.Persistence.MongoDb
 
         private void EnsureIndexes()
         {
+            var shouldBuildIndex = false;
+            try
+            {
+                if (Collection.Indexes.List().ToList().Count == 0)
+                {
+                    shouldBuildIndex = true;
+                };
+            }
+            catch
+            {
+            }
+            if (!shouldBuildIndex) return;
             // We can only index a collection if there's at least one element, otherwise it does nothing
-            if (Collection.CountDocuments(i => true) <= 0) return;
+            if (Collection.EstimatedDocumentCount() <= 0) return;
 
             // If there are more than one indexes present (the default on Id is created by mongo), do nothing. This means that if indexes
             // need to change, the collection needs to be reinitialized (or manage the indexes from Robomongo)
-            if (Collection.Indexes.List().ToList().Count > 1) return;
+
 
             var theClass = typeof(T);
 
@@ -116,7 +128,9 @@ namespace Citolab.Persistence.MongoDb
                     .FirstOrDefault(a => a.GetType() == typeof(EnsureIndexAttribute));
                 if (attribute != null)
                     EnsureIndexesAsDeclared((EnsureIndexAttribute)attribute, m.Name);
+
             }
+
         }
 
         private void EnsureIndexesAsDeclared(EnsureIndexAttribute attribute, string indexFieldName)
