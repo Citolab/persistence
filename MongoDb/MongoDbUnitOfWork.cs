@@ -74,7 +74,7 @@ namespace Citolab.Persistence.MongoDb
             var mongoCollection = new FlagAsDeletedDecorator<T>(MemoryCache,
                 new FillDefaultValueDecorator<T>(MemoryCache,
                     new CacheDecorator<T>(MemoryCache, neverRemove,
-                        new MongoDbCollection<T>(LoggerFactory, _mongoDatabase)), ActorId));
+                        new MongoDbCollection<T>(LoggerFactory, _mongoDatabase, MemoryCache)), ActorId));
             if (LogTime)
             {
                 var timeLoggedMongoDbCollection = new LogTimeDecorator<T>(MemoryCache, mongoCollection, _logger);

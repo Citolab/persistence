@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Citolab.Persistence.Helpers;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
@@ -22,13 +23,21 @@ namespace Citolab.Persistence.MongoDb
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="mongoDatabase"></param>
-        public MongoDbCollection(ILoggerFactory loggerFactory, IMongoDatabase mongoDatabase)
+        public MongoDbCollection(ILoggerFactory loggerFactory, IMongoDatabase mongoDatabase, IMemoryCache memoryCache)
         {
             Logger = loggerFactory.CreateLogger(GetType());
             try
             {
+                var indexKey = $"index_{typeof(T).Name}";
                 Collection = mongoDatabase.GetCollection<T>(typeof(T).Name);
-                EnsureIndexes();
+                if (!memoryCache.TryGetValue(indexKey, out bool hasIndexed) || !hasIndexed)
+                {
+                    if (EnsureIndexes())
+                    {
+                        memoryCache.Set(indexKey, true);
+                    };
+                }
+
             }
             catch (Exception exception)
             {
@@ -98,27 +107,50 @@ namespace Citolab.Persistence.MongoDb
             Collection.AsQueryable().FirstOrDefault(filter)
         );
 
-        private void EnsureIndexes()
+        /// <summary>
+        /// checks if indexes should be created
+        /// </summary>
+        /// <returns>
+        ///     Returns true if the indexes are created or already where created.
+        ///     Otherwise it returns false because there probably are no documents yet and the
+        ///     next time when there are documents, the indexes should be created.
+        /// </returns>
+        private bool EnsureIndexes()
         {
-            var shouldBuildIndex = false;
+            var attributes = getIndexAttributes();
+            // if there are no Index attributes then we don't have to do anything
+            if (!attributes.Any()) return true;
             try
             {
                 if (Collection.Indexes.List().ToList().Count == 0)
                 {
-                    shouldBuildIndex = true;
+                    // indexes already created
+                    return true; 
                 };
             }
             catch
             {
+                // probably no documents, check again next time, therefor return false
+                return false;
             }
-            if (!shouldBuildIndex) return;
+
+
             // We can only index a collection if there's at least one element, otherwise it does nothing
-            if (Collection.EstimatedDocumentCount() <= 0) return;
+            if (Collection.EstimatedDocumentCount() <= 0) return false;
 
             // If there are more than one indexes present (the default on Id is created by mongo), do nothing. This means that if indexes
             // need to change, the collection needs to be reinitialized (or manage the indexes from Robomongo)
 
+            foreach (var (attr, name) in attributes)
+            {
+                EnsureIndexesAsDeclared(attr, name);
+            }
+            return true;
+        }
 
+        private List<(EnsureIndexAttribute attr, string name)> getIndexAttributes()
+        {
+            var attributes = new List<(EnsureIndexAttribute attr, string name)>();
             var theClass = typeof(T);
 
             // Walk the members of the class to see if there are any directly attached index directives
@@ -127,10 +159,10 @@ namespace Citolab.Persistence.MongoDb
                 var attribute = m.GetCustomAttributes()
                     .FirstOrDefault(a => a.GetType() == typeof(EnsureIndexAttribute));
                 if (attribute != null)
-                    EnsureIndexesAsDeclared((EnsureIndexAttribute)attribute, m.Name);
+                    attributes.Add(((EnsureIndexAttribute)attribute, m.Name));
 
             }
-
+            return attributes;
         }
 
         private void EnsureIndexesAsDeclared(EnsureIndexAttribute attribute, string indexFieldName)
