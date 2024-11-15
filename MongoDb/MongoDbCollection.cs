@@ -9,6 +9,7 @@ using Citolab.Persistence.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Citolab.Persistence.MongoDb
 {
@@ -101,7 +102,7 @@ namespace Citolab.Persistence.MongoDb
 
         /// <inheritdoc />
         public async Task<T> FirstOrDefaultAsync() =>
-            await Collection.AsQueryable().FirstOrDefaultAsync();
+            await Collection.AsQueryable().FirstOrDefaultAsync() ;
 
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter) => Task.Run(() =>
             Collection.AsQueryable().FirstOrDefault(filter)
