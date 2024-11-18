@@ -13,15 +13,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
+using MongoDB.Bson;
+
 
 namespace MyApi
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -31,12 +34,9 @@ namespace MyApi
         {
             // adding new List<Type> { typeof(SampleEntity) } to the option will make sure the collection is cached.
             // whats means that it keeps in cache as long as the API runs. It does get updates from 
+            services.AddOpenApi();
             services.AddMongoDbPersistence("Example", Configuration.GetConnectionString("MongoDB"), new List<Type> { typeof(SampleEntity) });
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Citolab Persistence", Version = "v1" });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,15 +45,18 @@ namespace MyApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerUI(options =>
+              {
+                  options.SwaggerEndpoint("/openapi/v1.json", "v1");
+              });
             }
 
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapOpenApi();
             });
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Example backend V1"); });
             ;
 
         }

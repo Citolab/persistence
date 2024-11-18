@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-        <Authors>Citolab</Authors>
-        <Company>Cito</Company>
-        <Copyright>Cito</Copyright>
-        <Description>Library to persist data in Mongo or in-memory database</Description>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <PackageLicenseUrl>https://github.com/Citolab/persistence/blob/master/LICENSE</PackageLicenseUrl>
-        <PackageProjectUrl>https://github.com/Citolab/persistence/</PackageProjectUrl>
-        <PackageIconUrl>https://avatars1.githubusercontent.com/u/32355044?s=400&amp;u=8d300a1c77a82b06814b096d175f68a33bd6f73b&amp;v=4</PackageIconUrl>
-        <RepositoryUrl>https://github.com/Citolab/persistence/</RepositoryUrl>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Authors>Citolab</Authors>
+    <Company>Cito</Company>
+    <Copyright>Cito</Copyright>
+    <Description>Library to persist data in Mongo or in-memory database</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/Citolab/persistence/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Citolab/persistence/</PackageProjectUrl>
+    <PackageIconUrl>
+      https://avatars1.githubusercontent.com/u/32355044?s=400&amp;u=8d300a1c77a82b06814b096d175f68a33bd6f73b&amp;v=4</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Citolab/persistence/</RepositoryUrl>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <Compile Remove="example\**" />
-      <EmbeddedResource Remove="example\**" />
-      <None Remove="example\**" />
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="example\**" />
+    <EmbeddedResource Remove="example\**" />
+    <None Remove="example\**" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-        <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
-        <PackageReference Include="ObjectCloner" Version="2.2.2" />
-        <PackageReference Include="ObjectCloner.Extensions" Version="2.0.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="7.0.0" />
+  </ItemGroup>
 
 </Project>

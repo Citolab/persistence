@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using Citolab.Persistence.Helpers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Citolab.Persistence.MongoDb;
 using Citolab.Persistence.NoAction;
 using Microsoft.Extensions.DependencyInjection;
-using ObjectCloner.Extensions;
-
 namespace Citolab.Persistence.Extensions
 {
     public static class Extensions
@@ -34,6 +31,7 @@ namespace Citolab.Persistence.Extensions
 
         public static IServiceCollection AddMongoDbPersistence(this IServiceCollection services, MongoDbDatabaseOptions settings)
         {
+
             if (services == null) throw new ArgumentNullException(nameof(services));
             services.AddMemoryCache();
             services.AddLogging();
@@ -50,7 +48,20 @@ namespace Citolab.Persistence.Extensions
         /// <returns></returns>
         public static T Clone<T>(this T source)
         {
-            return source.DeepClone();
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source), "Source object cannot be null.");
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() },
+                WriteIndented = false,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            var json = JsonSerializer.Serialize(source, options);
+            return JsonSerializer.Deserialize<T>(json, options);
         }
     }
 }

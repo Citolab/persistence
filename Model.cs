@@ -1,4 +1,6 @@
 ﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 namespace Citolab.Persistence
 {
     /// <summary>
@@ -14,6 +16,7 @@ namespace Citolab.Persistence
             Id = Guid.NewGuid();
         }
 
+        [BsonId]
         public Guid Id { get; set; }
 
         /// <summary>

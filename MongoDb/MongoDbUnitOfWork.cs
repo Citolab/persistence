@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Citolab.Persistence.Decorators;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace Citolab.Persistence.MongoDb
@@ -44,12 +47,17 @@ namespace Citolab.Persistence.MongoDb
                     MongoClientSettings.FromConnectionString(
                         $"{mongoOptions.ConnectionString}/{fullDatabaseName}");
                 mongoClientSettings.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
+
+
                 var client = new MongoClient(mongoClientSettings);
 
                 _mongoDatabase = client.GetDatabase(fullDatabaseName);
                 _typesToCache = mongoOptions.TypesToCache;
                 Collections = new ConcurrentDictionary<Type, object>();
+
+                BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
             }
+
             catch (Exception exception)
             {
                 _logger.LogCritical(
