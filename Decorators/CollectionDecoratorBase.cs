@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -56,6 +57,9 @@ namespace Citolab.Persistence.Decorators
 
         public virtual async Task<long> GetCountAsync(Expression<Func<T, bool>> filter) =>
             await _decoree.GetCountAsync(filter);
+
+        public virtual async Task AddManyAsync(IList<T> documents) =>
+            await _decoree.AddManyAsync(documents);
 
         public virtual async Task<bool> AnyAsync() =>
             await _decoree.AnyAsync();

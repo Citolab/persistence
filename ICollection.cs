@@ -51,7 +51,7 @@ namespace Citolab.Persistence
         /// </summary>
         /// <param name="documents"></param>
         /// <returns></returns>
-        Task AddManyAsync(List<T> documents);
+        Task AddManyAsync(IList<T> documents);
 
         /// <summary>
         ///     Delete document.

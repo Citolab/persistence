@@ -71,7 +71,7 @@ namespace Citolab.Persistence.MongoDb
             return document;
         }
 
-        public async Task AddManyAsync(List<T> documents)
+        public async Task AddManyAsync(IList<T> documents)
         {
 
             await Collection.InsertManyAsync(documents, new InsertManyOptions
@@ -102,7 +102,7 @@ namespace Citolab.Persistence.MongoDb
 
         /// <inheritdoc />
         public async Task<T> FirstOrDefaultAsync() =>
-            await Collection.AsQueryable().FirstOrDefaultAsync() ;
+            await Collection.AsQueryable().FirstOrDefaultAsync();
 
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter) => Task.Run(() =>
             Collection.AsQueryable().FirstOrDefault(filter)
@@ -126,7 +126,7 @@ namespace Citolab.Persistence.MongoDb
                 if (Collection.Indexes.List().ToList().Count == 0)
                 {
                     // indexes already created
-                    return true; 
+                    return true;
                 };
             }
             catch

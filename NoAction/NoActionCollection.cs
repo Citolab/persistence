@@ -32,6 +32,6 @@ namespace Citolab.Persistence.NoAction
         public async Task<T> FirstOrDefaultAsync() => null;
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter) => null;
 
-        public Task AddManyAsync(List<T> documents) => Task.Run(() => { });
+        public Task AddManyAsync(IList<T> documents) => Task.Run(() => { });
     }
 }
