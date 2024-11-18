@@ -22,7 +22,7 @@ namespace MyApi.Controllers
             for (var i = 0; i < 10; i++)
             {
                 sampleEntity.AddAsync(new SampleEntity
-                    { Id = new Guid(), Value = $"Value {i}" }).Wait();
+                { Id = new Guid(), Value = $"Value {i}" }).Wait();
             }
         }
         // GET api/values
@@ -46,7 +46,6 @@ namespace MyApi.Controllers
         public void Post([FromBody] SampleEntity value)
         {
             _unitOfWork.GetCollection<SampleEntity>().AddAsync(value);
-            
         }
 
         // PUT api/values/5

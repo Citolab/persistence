@@ -21,8 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ObjectCloner" Version="2.2.2" />
+    <PackageReference Include="ObjectCloner.Extensions" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="7.0.0" />
